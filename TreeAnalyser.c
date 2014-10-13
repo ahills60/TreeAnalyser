@@ -18,6 +18,7 @@
 #include <math.h>
 #include <GL/glut.h>
 #include "TreeAnalyser.h"
+#include "DAMSONCRaytracer/raytracer.h"
 #include "DBSimulator/treeconsts.h"
 
 // Prototype functions
