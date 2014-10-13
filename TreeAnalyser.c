@@ -53,6 +53,8 @@ float lx = 0.0; lz = -1.0;
 // Tree variables
 float StatsVector[STATS_VECTOR_SIZE];
 float ObjectDB[MAX_TRIANGLES][TRIANGLE_SIZE];
+float MaterialDB[MAX_MATERIALS][MATERIAL_SIZE];
+int TextureDB[MAX_TEXTURES][TEXTURE_SIZE];
 int SceneBoundingBox[TREE_BOUNDING_BOX_ARRAY_SIZE];
 int TreeMatrix[MAX_BOUNDING_BOXES][TREE_MATRIX_SIZE];
 int TreeList[MAX_TRIANGLES][TREE_LIST_SIZE];
@@ -71,6 +73,16 @@ int noTextures = 0;
 
 // Tree stat counter:
 int TreeDepthCounter[MAX_TREE_DEPTH];
+
+// A container for textures.
+typedef struct Texture
+{
+    int *data;
+}
+Texture;
+
+// Variable for accessing the texture data.
+Texture Textures[MAX_TEXTURES];
 
 // Function to initialise the tree depth counter:
 void initialiseTreeDepthCounter(void)
