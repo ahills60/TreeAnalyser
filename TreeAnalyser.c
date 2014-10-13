@@ -365,6 +365,12 @@ int main (int argc, char *argv[])
             SceneryLoaded = 1;
     }
     
+    // Now begin by computing the tree stats.
+    initialiseTreeDepthCounter();
+    
+    // Then populate the node counter
+    populateTreeDepthCounter();
+    
     return 1;
 }
 
