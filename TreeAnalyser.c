@@ -676,5 +676,12 @@ void ReadTexture(int textureIdx, char *filename)
 
 void setMaterial(int materialIdx, int textureIdx)
 {
+    int n;
     
+    // Set the texture index:
+    MaterialDB[materialIdx][MaterialTextureIndex] = (float) textureIdx / 65536.0;
+    
+    // Then set everything to defaults:
+    for (n = 0; n < 3; n ++)
+        materialDB[materialIdx][MaterialColour + n] = 0.7; // Light grey
 }
