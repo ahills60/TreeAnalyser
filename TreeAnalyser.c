@@ -39,6 +39,8 @@ void mouseFunc(int button, int state, int xmouse, int ymouse);
 void mouseMoveFunc(int xmouse, int ymouse);
 void LoadTree(char *filename);
 int LoadScenery(char *filename);
+void ReadTexture(int textureIdx, char *filename);
+void setMaterial(int materialIdx, int textureIdx);
 
 // Global variables
 int mainWindow, treeSubWindow, sceneSubWindow;
@@ -653,4 +655,14 @@ int LoadScenery(char *filename)
     // Close the file pointer before terminating:
     fclose(fp);
     return 1;
+}
+
+void ReadTexture(int textureIdx, char *filename)
+{
+    
+}
+
+void setMaterial(int materialIdx, int textureIdx)
+{
+    
 }
