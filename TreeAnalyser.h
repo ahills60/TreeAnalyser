@@ -17,3 +17,6 @@
 #define SCREEN_WIDTH                            1280
 #define SCREEN_HEIGHT                           800
 #define BORDER_SIZE                             5
+
+// Key code:
+#define ESCAPE_KEY                              27

@@ -36,6 +36,8 @@ int LoadScenery(char *filename);
 
 // Global variables
 int mainWindow, treeSubWindow, sceneSubWindow;
+int SceneryLoaded = 0, xOrigin = -1;
+float deltaAngle = 0.0, deltaMoveFB = 0.0, deltaMoveLR = 0.0, deltaMoveUD = 0.0;
 
 // Tree variables
 float StatsVector[STATS_VECTOR_SIZE];
@@ -170,31 +172,83 @@ void initUI()
 // Keyboard key capture
 void keyboardFunc(unsigned char key, int xmouse, int ymouse)
 {
-    
+    if (key == ESCAPE_KEY)
+        exit(0);
 }
 
-// Keyboard speciak key capture
+// Keyboard special key capture
 void specialFunc(int key, int xmouse, int ymouse)
 {
-    
+    switch(key)
+    {
+        case GLUT_KEY_UP:
+            deltaMoveFB = 0.5;
+            break;
+        case GLUT_KEY_DOWN:
+            deltaMoveFB = -0.5;
+            break;
+        case GLUT_KEY_LEFT:
+            deltaMoveLR = -0.5;
+            break;
+        case GLUT_KEY_RIGHT:
+            deltaMoveLR = 0.5;
+            break;
+        case GLUT_KEY_PAGE_UP:
+            deltaMoveUD = 0.5;
+            break;
+        case GLUT_KEY_PAGE_DOWN:
+            deltaMoveUD = -0.5;
+            break;
+    }
 }
 
 // Keyboard special release keys capture
 void specialReleaseFunc(int key, int xmouse, int ymouse)
 {
-    
+    switch(key)
+    {
+        case GLUT_KEY_UP:
+        case GLUT_KEY_DOWN:
+            deltaMoveFB = 0;
+            break;
+        case GLUT_KEY_LEFT:
+        case GLUT_KEY_RIGHT:
+            deltaMoveLR = 0;
+            break;
+        case GLUT_KEY_PAGE_UP:
+        case GLUT_KEY_PAGE_DOWN:
+            deltaMoveUD = 0;
+            break;
+    }
 }
 
 // Mouse button capture.
 void mouseFunc(int button, int state, int xmouse, int ymouse)
 {
-    
+    if (button == GLUT_RIGHT_BUTTON)
+    {
+        // Check if the button was released:
+        if (state == GLUT_UP)
+        {
+            angle += deltaAngle;
+            xOrigin = - 1;
+        }
+        else
+        {
+            xOrigin = xmouse;
+        }
+    }
 }
 
 // Mouse movement capture.
 void mouseMoveFunc(int xmouse, int ymouse)
 {
-    
+    // If the xOrigin is positive then the left mouse button is held down:
+    if (xOrigin >= 0)
+    {
+        // Update the deltaAngle:
+        deltaAngle = (xmouse - xOrigin) * 0.001;
+    }
 }
 
 
@@ -262,7 +316,9 @@ int main (int argc, char *argv[])
     {
         // Yes, then load the scenery file.
         if(!LoadScenery(sceneFilename))
-            printf("WARNING: Unable to load the scenery file \"%s\". Verify that it exists.\n\n", sceneFilename);
+            printf("WARNING: Unable to load the scenery file \"%s\". Verify that it exists and is valid.\n\n", sceneFilename);
+        else
+            SceneryLoaded = 1;
     }
     
     return 1;
