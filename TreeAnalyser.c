@@ -16,6 +16,7 @@
 #include <time.h>
 #include <string.h>
 #include <math.h>
+#include <GL/glut.h>
 #include "TreeAnalyser.h"
 
 // Prototype functions
@@ -36,8 +37,11 @@ int LoadScenery(char *filename);
 
 // Global variables
 int mainWindow, treeSubWindow, sceneSubWindow;
-int SceneryLoaded = 0, xOrigin = -1;
-float deltaAngle = 0.0, deltaMoveFB = 0.0, deltaMoveLR = 0.0, deltaMoveUD = 0.0;
+int SceneryLoaded = 0, xOrigin = -1, yOrigin = -1;
+float deltaAngleX = 0.0, deltaAngleY = 0.0, deltaMoveFB = 0.0, deltaMoveLR = 0.0, deltaMoveUD = 0.0, angleX = 0.0, angleY = 0.0;
+
+// Camera angles
+float lx = 0.0; lz = -1.0; 
 
 // Tree variables
 float StatsVector[STATS_VECTOR_SIZE];
@@ -121,7 +125,7 @@ void initialiseGLUT(int argc, char *argv[])
     glutInit(&argc, argv);
     printf("Done\n");
     
-    mainWindow = glutCreateWindow("DAMSON parser visualiser");
+    mainWindow = glutCreateWindow("Tree Analyser");
     
     // Attach renderers to the main window
     glutDisplayFunc(mainWindowRenderer);
@@ -230,12 +234,16 @@ void mouseFunc(int button, int state, int xmouse, int ymouse)
         // Check if the button was released:
         if (state == GLUT_UP)
         {
-            angle += deltaAngle;
-            xOrigin = - 1;
+            angleX += deltaAngleX;
+            angleY += deltaAngleY;
+            
+            xOrigin = -1;
+            yOrigin = -1;
         }
         else
         {
             xOrigin = xmouse;
+            yOrigin = ymouse;
         }
     }
 }
@@ -243,11 +251,12 @@ void mouseFunc(int button, int state, int xmouse, int ymouse)
 // Mouse movement capture.
 void mouseMoveFunc(int xmouse, int ymouse)
 {
-    // If the xOrigin is positive then the left mouse button is held down:
+    // If the xOrigin is positive then the right mouse button is held down:
     if (xOrigin >= 0)
     {
         // Update the deltaAngle:
-        deltaAngle = (xmouse - xOrigin) * 0.001;
+        deltaAngleX = (xmouse - xOrigin) * 0.001;
+        deltaAngleY = (ymouse - yOrigin) * 0.001;
     }
 }
 
