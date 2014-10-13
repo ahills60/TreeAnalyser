@@ -20,6 +20,8 @@
 #include "TreeAnalyser.h"
 
 // Prototype functions
+void initialiseTreeDepthCounter(void);
+void populateTreeDepthCounter(void);
 void mainWindowRenderer(void);
 void reshapeFunc(int newWidth, int newHeight);
 void idleFunc(void);
@@ -62,6 +64,21 @@ int noTriangles = 0;
 int noMaterials = 0;
 int noTextures = 0;
 
+// Tree stat counter:
+int TreeDepthCounter[MAX_TREE_DEPTH];
+
+// Function to initialise the tree depth counter:
+void initialiseTreeDepthCounter(void)
+{
+    int n;
+    for (n = 0; n < MAX_TREE_DEPTH; n++)
+        TreeDepthCounter[n] = 0;
+}
+
+void populateTreeDepthCounter(void)
+{
+
+}
 
 // Main window display function
 void mainWindowRenderer(void)
