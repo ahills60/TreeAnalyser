@@ -26,6 +26,11 @@ void treeSubWindowRenderer(void);
 void sceneSubWindowRenderer(void);
 void initialiseGLUT(int argc, char *argv[]);
 void initUI();
+void keyboardFunc(unsigned char key, int xmouse, int ymouse);
+void specialFunc(int key, int xmouse, int ymouse);
+void specialReleaseFunc(int key, int xmouse, int ymouse);
+void mouseFunc(int button, int state, int xmouse, int ymouse);
+void mouseMoveFunc(int xmouse, int ymouse);
 
 // Global variables
 int mainWindow, treeSubWindow, sceneSubWindow;
@@ -121,6 +126,37 @@ void initUI()
     glutMouseFunc(mouseFunc);
     glutMotionFunc(mouseMoveFunc);
 }
+
+// Keyboard key capture
+void keyboardFunc(unsigned char key, int xmouse, int ymouse)
+{
+    
+}
+
+// Keyboard speciak key capture
+void specialFunc(int key, int xmouse, int ymouse)
+{
+    
+}
+
+// Keyboard special release keys capture
+void specialReleaseFunc(int key, int xmouse, int ymouse)
+{
+    
+}
+
+// Mouse button capture.
+void mouseFunc(int button, int state, int xmouse, int ymouse)
+{
+    
+}
+
+// Mouse movement capture.
+void mouseMoveFunc(int xmouse, int ymouse)
+{
+    
+}
+
 
 int main (int argc, char *argv[])
 {
