@@ -38,7 +38,13 @@ int mainWindow, treeSubWindow, sceneSubWindow;
 // Main window display function
 void mainWindowRenderer(void)
 {
+    glutSetWindow(mainWindow);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glutSwapBuffers();
     
+    // Call child display renderers:
+    treeSubWindowRenderer();
+    sceneSubWindowRenderer();
 }
 
 // Main window reshape function
@@ -57,13 +63,25 @@ void idleFunc(void)
 // Tree sub window display function
 void treeSubWindowRenderer(void)
 {
+    glutSetWindow(treeSubWindow);
     
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    
+    // Finally, swap buffers:
+    glutSwapBuffers();
 }
 
 // Scene sub window display function
 void sceneSubWindowRenderer(void)
 {
+    glutSetWindow(sceneSubWindow);
     
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    
+    // Finally, swap buffers:
+    glutSwapBuffers();
 }
 
 // function to initialise GLUT window and output
