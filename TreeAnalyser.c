@@ -671,7 +671,62 @@ int LoadScenery(char *filename)
 
 void ReadTexture(int textureIdx, char *filename)
 {
+    int width, height, i, size, pixelbits, channels;
+    int a;
+    int *bitmap;
+    unsigned char *data;
     
+    // Open the file
+    FILE *f = fopen(filename, "rb");
+    
+    // Make sure it opened
+    if (f)
+    {
+        // Extract height and width from file header
+        unsigned char buffer[20];
+        fread(buffer, 1, 20, f);
+        width = *(buffer + 12) + 256 * *(buffer + 13);
+        height = *(buffer + 14) + 256 * *(buffer + 15);
+        pixelbits = *(buffer + 16);
+        fclose(f);
+        size = height * width;
+        
+        // Compute the number of channels to expect.
+        channels = (pixelbits == 32) ? 4 : 3;
+        
+        // Now to read the pixel data
+        f = fopen(filename, "rb");
+        data = (unsigned char *)malloc(sizeof(unsigned char) * size * channels + 1024);
+        fread(data, 1, size * channels + 1024, f);
+        fclose(f);
+        
+        // Convert 8 bits to fixed point
+        bitmap = malloc(sizeof(int) * size * channels);
+        for (i = 0; i < size; i++)
+        {
+            // shifting by 8 is equivalent to 256. Note that as 1 starts at bit 16 and char is up to 8 bits, shift by eight to left to align.
+            bitmap[i * channels + 0] = ((int)data[i * channels + 20]) << 8;
+            bitmap[i * channels + 1] = ((int)data[i * channels + 19]) << 8;
+            bitmap[i * channels + 2] = ((int)data[i * channels + 18]) << 8;
+            // Then record alpha if necessary
+            if (channels == 4)
+                bitmap[i * channels + 3] = ((int)data[i * channels + 21]) << 8;
+        }
+        Textures[textureIdx].data = bitmap;
+        
+        // Free up the data variable:
+        free(data);
+        
+        // Now populate the TextureDB array:
+        TextureDB[textureIdx][TextureHeight] = height;
+        TextureDB[textureIdx][TextureWidth] = width;
+        TextureDB[textureIdx][TextureAlpha] = (channels == 3) ? 0 : 1;
+        TextureDB[textureIdx][TextureMemStart] = 0;
+    }
+    else
+    {
+        printf("Error encountered opening texture file \"%s\".\n", filename);
+    }
 }
 
 void setMaterial(int materialIdx, int textureIdx)
