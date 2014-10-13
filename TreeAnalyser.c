@@ -185,15 +185,9 @@ void initialiseGLUT(int argc, char *argv[])
     // Then initialise UI elements
     initUI();
     
-    glutDisplayFunc(displayFunc);
-    glutIdleFunc(idleFunc);
-    glutKeyboardFunc(keyboardFunc);
-    glutSpecialFunc(specialFunc);
-    glutReshapeFunc(reshapeFunc);
-    
-    glViewport(0, 0, SceneWidth, SceneHeight);
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glLoadIdentity();
-    glOrtho(0.0, SceneWidth - 1.0, 0.0, SceneHeight - 1.0, -1.0,  1.0);
+    glOrtho(0.0, SCREEN_WIDTH - 1.0, 0.0, SCREEN_HEIGHT - 1.0, -1.0,  1.0);
 }
 
 // Common UI elements are initialised within this function
@@ -347,7 +341,7 @@ int main (int argc, char *argv[])
     }
     
     // Check the tree variable for assignment.
-    if (!tree)
+    if (!treeFilename)
     {
         // It wasn't assigned to anything.
         printf("ERROR: Tree filename needs to be specified.\n\n");
