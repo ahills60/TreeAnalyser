@@ -31,9 +31,27 @@ void specialFunc(int key, int xmouse, int ymouse);
 void specialReleaseFunc(int key, int xmouse, int ymouse);
 void mouseFunc(int button, int state, int xmouse, int ymouse);
 void mouseMoveFunc(int xmouse, int ymouse);
+void LoadTree(char *filename);
 
 // Global variables
 int mainWindow, treeSubWindow, sceneSubWindow;
+
+// Tree variables
+float StatsVector[STATS_VECTOR_SIZE];
+float ObjectDB[MAX_TRIANGLES][TRIANGLE_SIZE];
+int SceneBoundingBox[TREE_BOUNDING_BOX_ARRAY_SIZE];
+int TreeMatrix[MAX_BOUNDING_BOXES][TREE_MATRIX_SIZE];
+int TreeList[MAX_TRIANGLES][TREE_LIST_SIZE];
+int SplitList[MAX_TRIANGLES * 2 + 8][SPLIT_LIST_SIZE];
+int NodeList[MAX_TRIANGLES * 2][NODE_LIST_SIZE];
+
+// Counters for the above lists.
+int SplitListTop = 0;
+int noSplitListEntries = 0;
+int noTreeListEntries = 0;
+int noTreeMatrixEntries = 0;
+int noNodeListEntries = 0;
+
 
 // Main window display function
 void mainWindowRenderer(void)
@@ -232,4 +250,59 @@ int main (int argc, char *argv[])
     }
     
     return 1;
+}
+
+// Function to load a tree file to memory
+void LoadTree(char *filename)
+{
+    FILE *fp;
+    int n, m;
+    
+    printf("Restoring tree to memory...\n");
+    
+    // Open the file for reading
+    fp = fopen(filename, "r");
+    
+    if (!fp)
+    {
+        // Invalid file
+        printf("ERROR: Unable to open \"%s\" for reading.\n\n", filename);
+        exit(-100);
+    }
+    
+    // If here, the file was opened successfully. Now start reading:
+    for (n = 0; n < TREE_BOUNDING_BOX_ARRAY_SIZE; n++)
+        fread(&SceneBoundingBox[n], sizeof(int), 1, fp);
+    
+    // Then load constants:
+    fread(&SplitListTop, sizeof(int), 1, fp);
+    fread(&noSplitListEntries, sizeof(int), 1, fp);
+    fread(&noTreeListEntries, sizeof(int), 1, fp);
+    fread(&noTreeMatrixEntries, sizeof(int), 1, fp);
+    fread(&noNodeListEntries, sizeof(int), 1, fp);
+    
+    // Now import the tree matrix:
+    for (m = 0; m < noTreeMatrixEntries; m++)
+        for (n = 0; n < TREE_MATRIX_SIZE; n++)
+            fread(&TreeMatrix[m][n], sizeof(int), 1, fp);
+    
+    // Then the tree list:
+    for (m = 0; m < noTreeListEntries; m++)
+        for (n = 0; n < TREE_LIST_SIZE; n++)
+            fread(&TreeList[m][n], sizeof(int), 1, fp);
+    
+    // Then the split list:
+    for (m = 0; m < noSplitListEntries; m++)
+        for (n = 0; n < SPLIT_LIST_SIZE; n++)
+            fread(&SplitList[m][n], sizeof(int), 1, fp);
+    
+    // Finally the node list:
+    for (m = 0; m < noNodeListEntries; m++)
+        for (n = 0; n < NODE_LIST_SIZE; n++)
+            fread(&NodeList[m][n], sizeof(int), 1, fp);
+    
+    // As there's nothing else to read, close the file pointer:
+    fclose(fp);
+    
+    printf("Tree state restored from \"%s\".\n\n", filename);
 }
