@@ -22,6 +22,7 @@
 // Prototype functions
 void initialiseTreeDepthCounter(void);
 void populateTreeDepthCounter(void);
+void _childTreeDepthCounter(int nodeIdx, int depth);
 void mainWindowRenderer(void);
 void reshapeFunc(int newWidth, int newHeight);
 void idleFunc(void);
@@ -77,7 +78,24 @@ void initialiseTreeDepthCounter(void)
 
 void populateTreeDepthCounter(void)
 {
+    // Call the child thread:
+    _childTreeDepthCounter(0, 0);
+}
 
+void _childTreeDepthCounter(int nodeIdx, int depth)
+{
+    int n;
+    
+    // Check if this branch is a leaf node.
+    if (TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE] < 0)
+        return;
+    
+    TreeDepthCounter[depth]++;
+    
+    // First try the left:
+    _childTreeDepthCounter(TreeMatrix[nodeIdx][TREE_MATRIX_LEFT_NODE], depth + 1);
+    // Then try the right:
+    _childTreeDepthCounter(TreeMatrix[nodeIdx][TREE_MATRIX_RIGHT_NODE], depth + 1);
 }
 
 // Main window display function
