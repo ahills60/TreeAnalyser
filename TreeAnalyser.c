@@ -349,7 +349,7 @@ void mouseMoveFunc(int xmouse, int ymouse)
 
 int main (int argc, char *argv[])
 {
-    char *currObj, *parVal = "", *treeFilename, *sceneFilename;
+    char *currObj, *parVal = "", *treeFilename = 0, *sceneFilename = 0;
     int isParam, i, n, a;
     
     printf("\nTreeAnalyser ");
