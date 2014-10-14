@@ -442,7 +442,6 @@ int main (int argc, char *argv[])
 void LoadTree(char *filename)
 {
     FILE *fp;
-    int n, m;
     
     printf("Restoring tree to memory...\n");
     
@@ -457,8 +456,7 @@ void LoadTree(char *filename)
     }
     
     // If here, the file was opened successfully. Now start reading:
-    for (n = 0; n < TREE_BOUNDING_BOX_ARRAY_SIZE; n++)
-        fread(&SceneBoundingBox[n], sizeof(int), 1, fp);
+    fread(SceneBoundingBox, sizeof(int), TREE_BOUNDING_BOX_ARRAY_SIZE, fp);
     
     // Then load constants:
     fread(&SplitListTop, sizeof(int), 1, fp);
@@ -468,24 +466,16 @@ void LoadTree(char *filename)
     fread(&noNodeListEntries, sizeof(int), 1, fp);
     
     // Now import the tree matrix:
-    for (m = 0; m < noTreeMatrixEntries; m++)
-        for (n = 0; n < TREE_MATRIX_SIZE; n++)
-            fread(&TreeMatrix[m][n], sizeof(int), 1, fp);
+    fread(TreeMatrix, sizeof(int), noTreeMatrixEntries * TREE_MATRIX_SIZE, fp);
     
     // Then the tree list:
-    for (m = 0; m < noTreeListEntries; m++)
-        for (n = 0; n < TREE_LIST_SIZE; n++)
-            fread(&TreeList[m][n], sizeof(int), 1, fp);
+    fread(TreeList, sizeof(int), noTreeListEntries * TREE_LIST_SIZE, fp);
     
     // Then the split list:
-    for (m = 0; m < noSplitListEntries; m++)
-        for (n = 0; n < SPLIT_LIST_SIZE; n++)
-            fread(&SplitList[m][n], sizeof(int), 1, fp);
+    fread(SplitList, sizeof(int), (MAX_TREE_DEPTH * 2 + 8) * SPLIT_LIST_SIZE, fp);
     
     // Finally the node list:
-    for (m = 0; m < noNodeListEntries; m++)
-        for (n = 0; n < NODE_LIST_SIZE; n++)
-            fread(&NodeList[m][n], sizeof(int), 1, fp);
+    fread(NodeList, sizeof(int), (MAX_TRIANGLES * 2) * NODE_LIST_SIZE, fp);
     
     // As there's nothing else to read, close the file pointer:
     fclose(fp);
