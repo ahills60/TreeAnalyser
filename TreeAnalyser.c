@@ -22,6 +22,8 @@
 #include "DBSimulator/treeconsts.h"
 
 // Prototype functions
+void DrawSquareNode(float x, float y);
+void DrawLinesNode(float startx, float starty, float endx, float endy);
 void initialiseTreeDepthCounter(void);
 void populateTreeDepthCounter(void);
 void _childTreeDepthCounter(int nodeIdx, int depth);
@@ -87,6 +89,62 @@ Texture;
 
 // Variable for accessing the texture data.
 Texture Textures[MAX_TEXTURES];
+
+// Draws a square that's centred at (x, y)
+void DrawSquareNode(float x, float y)
+{
+    float xmin, ymin, xmax, ymax;
+    
+    // Define corners of square
+    xmin = x - NODE_DRAW_SQUARE_SIZE / 2.0;
+    xmax = xmin + NODE_DRAW_SQUARE_SIZE;
+    ymin = y - NODE_DRAW_SQUARE_SIZE / 2.0;
+    ymax = ymin + NODE_DRAW_SQUARE_SIZE;
+    
+    // Set the tree window
+    glutSetWindow(treeSubWindow);
+    
+    // Clear information from last draw:
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Switch to drawing mode
+    glMatrixMode(GL_MODELVIEW);
+    // Reset drawing perspective
+    glLoadIdentity();
+    // Define the colour
+    glColor3f(NODE_DRAW_SQUARE_COLOUR_R, NODE_DRAW_SQUARE_COLOUR_G, NODE_DRAW_SQUARE_COLOUR_B);
+    
+    // Begin defining quadrilateral coordinates
+    glBegin(GL_QUADS);
+        glVertex2f(xmin, ymin);
+        glVertex2f(xmin, ymax);
+        glVertex2f(xmax, ymax);
+        glVertex2f(xmax, ymin);
+    glEnd();
+    glutSwapBuffers();
+}
+
+// Draws a line from a to b
+void DrawLinesNode(float startx, float starty, float endx, float endy)
+{
+    // Set the tree window
+    glutSetWindow(treeSubWindow);
+    
+    // Clear information from last draw:
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Switch to drawing mode
+    glMatrixMode(GL_MODELVIEW);
+    // Reset drawing perspective
+    glLoadIdentity();
+    // Define the colour
+    glColor3f(NODE_DRAW_LINE_COLOUR_R, NODE_DRAW_LINE_COLOUR_G, NODE_DRAW_LINE_COLOUR_B);
+    
+    // Begin defining quadrilateral coordinates
+    glBegin(GL_LINES);
+        glVertex2f(startx, starty);
+        glVertex2f(endx, endy);
+    glEnd();
+    glutSwapBuffers();
+}
 
 // Function to initialise the tree depth counter:
 void initialiseTreeDepthCounter(void)
