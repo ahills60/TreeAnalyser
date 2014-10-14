@@ -422,6 +422,11 @@ int main (int argc, char *argv[])
     // Then populate the node counter
     populateTreeDepthCounter();
     
+    // Then get node stats. Start by initialising counters:
+    initialiseTreeNodeCounter();
+    // And then populate the array:
+    populateTreeNodeCounter();
+    
     return 1;
 }
 
