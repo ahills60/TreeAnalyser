@@ -417,15 +417,23 @@ int main (int argc, char *argv[])
     }
     
     // Now begin by computing the tree stats.
+    printf("Initialising depth counter... ");
     initialiseTreeDepthCounter();
+    printf("Done.\n");
     
     // Then populate the node counter
+    printf("Populating depth counter... ");
     populateTreeDepthCounter();
+    printf("Done.\n\n");
     
     // Then get node stats. Start by initialising counters:
+    printf("Initialising node counter... ");
     initialiseTreeNodeCounter();
+    printf("Done.\n");
     // And then populate the array:
+    printf("Populating node counter... ");
     populateTreeNodeCounter();
+    printf("Done.\n\n");
     
     return 1;
 }
