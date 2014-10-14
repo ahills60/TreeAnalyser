@@ -25,7 +25,7 @@
 #define NODE_DRAW_SQUARE_SIZE                   5.0
 #define NODE_DRAW_SQUARE_COLOUR_R               1.0
 #define NODE_DRAW_SQUARE_COLOUR_G               0.0
-#define NODE_DRAW_LINE_COLOUR_B                 0.0
+#define NODE_DRAW_SQUARE_COLOUR_B               0.0
 #define NODE_DRAW_LINE_COLOUR_R                 0.0
 #define NODE_DRAW_LINE_COLOUR_G                 1.0
 #define NODE_DRAW_LINE_COLOUR_B                 0.0
