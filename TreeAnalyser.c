@@ -25,6 +25,9 @@
 void initialiseTreeDepthCounter(void);
 void populateTreeDepthCounter(void);
 void _childTreeDepthCounter(int nodeIdx, int depth);
+void initialiseTreeNodeCounter(void);
+void populateTreeNodeCounter(void);
+int _childTreeNodeCounter(int nodeIdx, int depth);
 void mainWindowRenderer(void);
 void reshapeFunc(int newWidth, int newHeight);
 void idleFunc(void);
@@ -73,6 +76,7 @@ int noTextures = 0;
 
 // Tree stat counter:
 int TreeDepthCounter[MAX_TREE_DEPTH];
+int TreeNodeCounter[MAX_BOUNDING_BOXES];
 
 // A container for textures.
 typedef struct Texture
@@ -112,6 +116,43 @@ void _childTreeDepthCounter(int nodeIdx, int depth)
     _childTreeDepthCounter(TreeMatrix[nodeIdx][TREE_MATRIX_LEFT_NODE], depth + 1);
     // Then try the right:
     _childTreeDepthCounter(TreeMatrix[nodeIdx][TREE_MATRIX_RIGHT_NODE], depth + 1);
+}
+
+void initialiseTreeNodeCounter(void)
+{
+    int n;
+    for (n = 0; n < MAX_BOUNDING_BOXES; n++)
+        TreeNodeCounter[n] = 0;
+}
+
+void populateTreeNodeCounter(void)
+{
+    _childTreeNodeCounter(0);
+}
+
+int _childTreeNodeCounter(int nodeIdx)
+{
+    int n, count = 0, idx;
+    
+    if (TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE] > 0)
+    {
+        // Begin recursive search
+        idx = TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE];
+        
+        while (idx >= 0)
+        {
+            count++;
+            idx = NodeList[idx][NODE_LIST_NEXT_INDEX];
+        }
+        return count;
+    }
+    
+    count = _childTreeNodeCounter(TreeMatrix[nodeIdx][TREE_MATRIX_LEFT_NODE]);
+    count += _childTreeNodeCounter(TreeMatrix[nodeIdx][TREE_MATRIX_RIGHT_NODE]);
+    
+    TreeNodeCounter[nodeIdx] = count;
+    
+    return count;
 }
 
 // Main window display function
