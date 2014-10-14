@@ -738,5 +738,5 @@ void setMaterial(int materialIdx, int textureIdx)
     
     // Then set everything to defaults:
     for (n = 0; n < 3; n ++)
-        materialDB[materialIdx][MaterialColour + n] = 0.7; // Light grey
+        MaterialDB[materialIdx][MaterialColour + n] = 0.7; // Light grey
 }
