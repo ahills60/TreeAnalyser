@@ -27,7 +27,7 @@ void populateTreeDepthCounter(void);
 void _childTreeDepthCounter(int nodeIdx, int depth);
 void initialiseTreeNodeCounter(void);
 void populateTreeNodeCounter(void);
-int _childTreeNodeCounter(int nodeIdx, int depth);
+int _childTreeNodeCounter(int nodeIdx);
 void mainWindowRenderer(void);
 void reshapeFunc(int newWidth, int newHeight);
 void idleFunc(void);
@@ -134,7 +134,7 @@ int _childTreeNodeCounter(int nodeIdx)
 {
     int n, count = 0, idx;
     
-    if (TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE] > 0)
+    if (TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE] >= 0)
     {
         // Begin recursive search
         idx = TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE];
