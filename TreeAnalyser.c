@@ -106,16 +106,17 @@ void _childTreeDepthCounter(int nodeIdx, int depth)
 {
     int n;
     
-    // Check if this branch is a leaf node.
-    if (TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE] < 0)
-        return;
-    
+    // Increment the counter
     TreeDepthCounter[depth]++;
     
-    // First try the left:
-    _childTreeDepthCounter(TreeMatrix[nodeIdx][TREE_MATRIX_LEFT_NODE], depth + 1);
-    // Then try the right:
-    _childTreeDepthCounter(TreeMatrix[nodeIdx][TREE_MATRIX_RIGHT_NODE], depth + 1);
+    // Check if this branch is a leaf node. If not, call on children
+    if (TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE] < 0)
+    {
+        // First try the left:
+        _childTreeDepthCounter(TreeMatrix[nodeIdx][TREE_MATRIX_LEFT_NODE], depth + 1);
+        // Then try the right:
+        _childTreeDepthCounter(TreeMatrix[nodeIdx][TREE_MATRIX_RIGHT_NODE], depth + 1);
+    }
 }
 
 void initialiseTreeNodeCounter(void)
