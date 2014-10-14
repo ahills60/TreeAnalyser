@@ -24,6 +24,8 @@
 // Prototype functions
 void DrawSquareNode(float x, float y);
 void DrawLinesNode(float startx, float starty, float endx, float endy);
+void DrawTree(void);
+void _childDrawTree(int currIdx, int depth);
 void initialiseTreeDepthCounter(void);
 void populateTreeDepthCounter(void);
 void _childTreeDepthCounter(int nodeIdx, int depth);
@@ -79,6 +81,7 @@ int noTextures = 0;
 // Tree stat counter:
 int TreeDepthCounter[MAX_TREE_DEPTH];
 int TreeNodeCounter[MAX_BOUNDING_BOXES];
+int TreeDepthCurrentProgress[MAX_TREE_DEPTH];
 
 // A container for textures.
 typedef struct Texture
@@ -144,6 +147,48 @@ void DrawLinesNode(float startx, float starty, float endx, float endy)
         glVertex2f(endx, endy);
     glEnd();
     glutSwapBuffers();
+}
+
+// Function to draw the tree
+void DrawTree(void)
+{
+    int n;
+    // Initialise current progress vector
+    for (n = 0; n < MAX_BOUNDING_BOXES; n++)
+        TreeDepthCurrentProgress[n] = 0;
+    
+    // Call the child thread
+    _childDrawTree(0, 0);
+    
+}
+
+// Child draw tree process
+void _childDrawTree(int currIdx, int depth)
+{
+    float posx, parentposx;
+    
+    TreeDepthCurrentProgress[depth]++;
+    
+    if (TreeMatrix[TREE_MATRIX_LEAF_NODE] < 0)
+    {
+        // Draw child nodes:
+        _childDrawTree(TreeMatrix[TREE_MATRIX_LEFT_NODE], depth + 1);
+        _childDrawTree(TreeMatrix[TREE_MATRIX_RIGHT_NODE], depth + 1);
+    }
+    
+    // Compute the new x location
+    posx = (float) TreeDepthCounter[depth] * 2.0 - 1.0;
+    posx = NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth] * 2.0 - 1.0) / posx;
+    // Compute the old x location:
+    if (depth > 0)
+    {
+        parentposx = (float) TreeDepthCounter[depth - 1] * 2.0 - 1.0;
+        parentposx = NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth - 1] * 2.0 - 1.0) / parentposx;
+        // Draw line back to the parent
+        DrawLinesNode(parentposx, -(depth - 1), posx, -depth);
+    }
+    // Finally, draw the block:
+    DrawSquareNode(posx, -depth);
 }
 
 // Function to initialise the tree depth counter:
