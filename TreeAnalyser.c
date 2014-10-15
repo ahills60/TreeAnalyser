@@ -293,9 +293,20 @@ void treeSubWindowRenderer(void)
 {
     glutSetWindow(treeSubWindow);
     
+    // Clear information from last draw:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    
+    // Switch to drawing mode
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluPerspective(90.0, 0.625, 3.0, 200.0);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    gluLookAt(40, -40, 70, 40, -40, 0, 0, 1, 0);
+    DrawTree();
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
     // Finally, swap buffers:
     glutSwapBuffers();
 }
