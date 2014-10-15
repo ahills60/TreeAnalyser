@@ -25,10 +25,10 @@
 
 // Prototype functions
 void computeScenePosition(void);
-void DrawBoundaryBox(float bbvec[6], int splitAxis, float splitPos);
+void DrawBoundaryBox(float bbvec[6], int splitAxis, float splitPos, int nodeidx);
 void DrawBoxes(void);
 void _childDrawBoxes(int currIdx, float nodeBB[6]);
-void DrawSquareNode(float x, float y);
+void DrawSquareNode(float x, float y, int nodeIdx);
 void DrawLinesNode(float startx, float starty, float endx, float endy);
 void DrawTree(void);
 void _childDrawTree(int currIdx, int depth);
@@ -89,6 +89,8 @@ int TreeDepthCounter[MAX_TREE_DEPTH];
 int TreeNodeCounter[MAX_BOUNDING_BOXES];
 int TreeDepthCurrentProgress[MAX_TREE_DEPTH];
 
+int SelectedNodeIdx = 0;
+
 // A container for textures.
 typedef struct Texture
 {
@@ -107,7 +109,7 @@ void computeScenePosition(void)
 }
 
 // Draws a boundary box given these conditions:
-void DrawBoundaryBox(float bbvec[6], int splitAxis, float splitPos)
+void DrawBoundaryBox(float bbvec[6], int splitAxis, float splitPos, int nodeIdx)
 {
     float mins[3], maxs[3];
     int n;
@@ -120,7 +122,10 @@ void DrawBoundaryBox(float bbvec[6], int splitAxis, float splitPos)
     }
     
     // Start drawing outside box:
-    glColor3f(AABB_DRAW_LINE_COLOUR_R, AABB_DRAW_LINE_COLOUR_G, AABB_DRAW_LINE_COLOUR_B);
+    if (nodeIdx == SelectedNodeIdx)
+        glColor3f(AABB_DRAW_LINE_SELECTED_COLOUR_R, AABB_DRAW_LINE_SELECTED_COLOUR_G, AABB_DRAW_LINE_SELECTED_COLOUR_B);
+    else
+        glColor3f(AABB_DRAW_LINE_COLOUR_R, AABB_DRAW_LINE_COLOUR_G, AABB_DRAW_LINE_COLOUR_B);
     glPushMatrix();
     glBegin(GL_LINES);
         // AB
@@ -238,7 +243,7 @@ void _childDrawBoxes(int currIdx, float nodeBB[6])
         splitAxis = TreeMatrix[currIdx][TREE_MATRIX_AXIS_INDEX];
         
         // Draw this box:
-        DrawBoundaryBox(nodeBB, splitAxis, splitPos);
+        DrawBoundaryBox(nodeBB, splitAxis, splitPos, currIdx);
         
         // Modify boundary box before passing onto node:
         memcpy(&newBB[0], &nodeBB[0], sizeof(float) * 6);
@@ -260,7 +265,7 @@ void _childDrawBoxes(int currIdx, float nodeBB[6])
 }
 
 // Draws a square that's centred at (x, y)
-void DrawSquareNode(float x, float y)
+void DrawSquareNode(float x, float y, int nodeIdx)
 {
     float xmin, ymin, xmax, ymax;
     
@@ -274,7 +279,10 @@ void DrawSquareNode(float x, float y)
     // glutSetWindow(treeSubWindow);
     
     // Begin defining quadrilateral coordinates
-    glColor3f(NODE_DRAW_SQUARE_COLOUR_R, NODE_DRAW_SQUARE_COLOUR_G, NODE_DRAW_SQUARE_COLOUR_B);
+    if (nodeIdx == SelectedNodeIdx)
+        glColor3f(NODE_DRAW_SQUARE_SELECTED_COLOUR_R, NODE_DRAW_SQUARE_SELECTED_COLOUR_G, NODE_DRAW_SQUARE_SELECTED_COLOUR_B);
+    else
+        glColor3f(NODE_DRAW_SQUARE_COLOUR_R, NODE_DRAW_SQUARE_COLOUR_G, NODE_DRAW_SQUARE_COLOUR_B);
     glPushMatrix();
     glBegin(GL_QUADS);
         glVertex3f(xmin, ymin, 0.0);
@@ -344,7 +352,7 @@ void _childDrawTree(int currIdx, int depth)
         DrawLinesNode(parentposx, -NODE_DRAW_SQUARE_SIZE * 1.5 * ((float) depth - 1), posx, -NODE_DRAW_SQUARE_SIZE * 1.5 * (float) depth);
     }
     // Finally, draw the block:
-    DrawSquareNode(posx, -NODE_DRAW_SQUARE_SIZE * 1.5 * (float) depth);
+    DrawSquareNode(posx, -NODE_DRAW_SQUARE_SIZE * 1.5 * (float) depth, currIdx);
 }
 
 // Function to initialise the tree depth counter:
