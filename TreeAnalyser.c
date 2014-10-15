@@ -89,7 +89,9 @@ int TreeDepthCounter[MAX_TREE_DEPTH];
 int TreeNodeCounter[MAX_BOUNDING_BOXES];
 int TreeDepthCurrentProgress[MAX_TREE_DEPTH];
 
-int SelectedNodeIdx = 0;
+int SelectedNodeIdx = 0, SelectedSplitAxis = 0;
+float SelectedBBVec[6] = {0, 0, 0, 0, 0, 0}, SelectedSplitPosition = 0.0;
+
 
 // A container for textures.
 typedef struct Texture
@@ -228,6 +230,9 @@ void DrawBoxes(void)
         sceneBox[n] = (float)SceneBoundingBox[n] / 65536.0;
     
     _childDrawBoxes(0, sceneBox);
+    
+    // Finally, draw the highlighted one.
+    DrawBoundaryBox(SelectedBBVec, SelectedSplitAxis, SelectedSplitPosition, SelectedNodeIdx);
 }
 
 void _childDrawBoxes(int currIdx, float nodeBB[6])
@@ -243,7 +248,15 @@ void _childDrawBoxes(int currIdx, float nodeBB[6])
         splitAxis = TreeMatrix[currIdx][TREE_MATRIX_AXIS_INDEX];
         
         // Draw this box:
-        DrawBoundaryBox(nodeBB, splitAxis, splitPos, currIdx);
+        if (currIdx == SelectedNodeIdx)
+        {
+            // Save values and don't draw yet.
+            memcpy(&SelectedBBVec[0], &nodeBB[0], sizeof(float) * 6);
+            SelectedSplitPosition = splitPos;
+            SelectedSplitAxis = splitAxis;
+        }
+        else
+            DrawBoundaryBox(nodeBB, splitAxis, splitPos, currIdx);
         
         // Modify boundary box before passing onto node:
         memcpy(&newBB[0], &nodeBB[0], sizeof(float) * 6);
