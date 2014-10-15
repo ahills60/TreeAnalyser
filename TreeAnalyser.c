@@ -107,25 +107,18 @@ void DrawSquareNode(float x, float y)
     ymax = ymin + NODE_DRAW_SQUARE_SIZE;
     
     // Set the tree window
-    glutSetWindow(treeSubWindow);
-    
-    // Clear information from last draw:
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // Switch to drawing mode
-    glMatrixMode(GL_MODELVIEW);
-    // Reset drawing perspective
-    glLoadIdentity();
-    // Define the colour
-    glColor3f(NODE_DRAW_SQUARE_COLOUR_R, NODE_DRAW_SQUARE_COLOUR_G, NODE_DRAW_SQUARE_COLOUR_B);
+    // glutSetWindow(treeSubWindow);
     
     // Begin defining quadrilateral coordinates
+    glColor3f(NODE_DRAW_SQUARE_COLOUR_R, NODE_DRAW_SQUARE_COLOUR_G, NODE_DRAW_SQUARE_COLOUR_B);
+    glPushMatrix();
     glBegin(GL_QUADS);
-        glVertex2f(xmin, ymin);
-        glVertex2f(xmin, ymax);
-        glVertex2f(xmax, ymax);
-        glVertex2f(xmax, ymin);
+        glVertex3f(xmin, ymin, 0.0);
+        glVertex3f(xmin, ymax, 0.0);
+        glVertex3f(xmax, ymax, 0.0);
+        glVertex3f(xmax, ymin, 0.0);
     glEnd();
-    glutSwapBuffers();
+    glPopMatrix();
 }
 
 // Draws a line from a to b
