@@ -125,23 +125,17 @@ void DrawSquareNode(float x, float y)
 void DrawLinesNode(float startx, float starty, float endx, float endy)
 {
     // Set the tree window
-    glutSetWindow(treeSubWindow);
+    // glutSetWindow(treeSubWindow);
     
-    // Clear information from last draw:
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // Switch to drawing mode
-    glMatrixMode(GL_MODELVIEW);
-    // Reset drawing perspective
-    glLoadIdentity();
-    // Define the colour
+    // Begin defining line coordinates
     glColor3f(NODE_DRAW_LINE_COLOUR_R, NODE_DRAW_LINE_COLOUR_G, NODE_DRAW_LINE_COLOUR_B);
-    
-    // Begin defining quadrilateral coordinates
+    glPushMatrix();
     glBegin(GL_LINES);
-        glVertex2f(startx, starty);
-        glVertex2f(endx, endy);
+        glVertex3f(startx, starty, 0.0);
+        glVertex3f(endx, endy, 0.0);
     glEnd();
-    glutSwapBuffers();
+    glPopMatrix();
+    
 }
 
 // Function to draw the tree
