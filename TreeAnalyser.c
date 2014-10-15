@@ -24,6 +24,9 @@
 #include "DBSimulator/treeconsts.h"
 
 // Prototype functions
+void DrawBoundaryBox(float bbvec[6], int splitAxis, float splitPos);
+void DrawBoxes(void);
+void _childDrawBoxes(int currIdx, float nodeBB[6]);
 void DrawSquareNode(float x, float y);
 void DrawLinesNode(float startx, float starty, float endx, float endy);
 void DrawTree(void);
@@ -94,6 +97,159 @@ Texture;
 
 // Variable for accessing the texture data.
 Texture Textures[MAX_TEXTURES];
+
+// Draws a boundary box given these conditions:
+void DrawBoundaryBox(float bbvec[6], int splitAxis, float splitPos)
+{
+    float mins[3], maxs[3];
+    int n;
+    
+    // Compute the min and max cases:
+    for (n = 0; n < 3; n++)
+    {
+        mins[n] = bbvec[n];
+        maxs[n] = bbvec[n] + bbvec[n + 3];
+    }
+    
+    // Start drawing outside box:
+    glColor3f(AABB_DRAW_LINE_COLOUR_R, AABB_DRAW_LINE_COLOUR_G, AABB_DRAW_LINE_COLOUR_B);
+    glPushMatrix();
+    glBegin(GL_LINES);
+        // AB
+        glVertex3f(mins[0], mins[1], mins[2]);
+        glVertex3f(maxs[0], mins[1], mins[2]);
+        // AC
+        glVertex3f(mins[0], mins[1], mins[2]);
+        glVertex3f(mins[0], mins[1], maxs[2]);
+        // AE
+        glVertex3f(mins[0], mins[1], mins[2]);
+        glVertex3f(mins[0], maxs[1], mins[2]);
+        // BD
+        glVertex3f(maxs[0], mins[1], mins[2]);
+        glVertex3f(maxs[0], mins[1], maxs[2]);
+        // BH
+        glVertex3f(maxs[0], mins[1], mins[2]);
+        glVertex3f(maxs[0], maxs[1], mins[2]);
+        // CD
+        glVertex3f(mins[0], mins[1], maxs[2]);
+        glVertex3f(maxs[0], mins[1], maxs[2]);
+        // CF
+        glVertex3f(mins[0], mins[1], maxs[2]);
+        glVertex3f(mins[0], maxs[1], maxs[2]);
+        // DG
+        glVertex3f(maxs[0], mins[1], maxs[2]);
+        glVertex3f(maxs[0], maxs[1], maxs[2]);
+        // EF
+        glVertex3f(mins[0], maxs[1], mins[2]);
+        glVertex3f(mins[0], maxs[1], maxs[2]);
+        // EH
+        glVertex3f(mins[0], maxs[1], mins[2]);
+        glVertex3f(maxs[0], maxs[1], mins[2]);
+        // FG
+        glVertex3f(mins[0], maxs[1], maxs[2]);
+        glVertex3f(maxs[0], maxs[1], maxs[2]);
+        // GH
+        glVertex3f(maxs[0], maxs[1], maxs[2]);
+        glVertex3f(maxs[0], maxs[1], mins[2]);
+        
+        // Finally, get the split right:
+        mins[splitAxis] = splitPos;
+        maxs[splitAxis] = splitPos;
+        
+        switch(splitAxis)
+        {
+            case 0:
+                // AC
+                glVertex3f(mins[0], mins[1], mins[2]);
+                glVertex3f(mins[0], mins[1], maxs[2]);
+                // AE
+                glVertex3f(mins[0], mins[1], mins[2]);
+                glVertex3f(mins[0], maxs[1], mins[2]);
+                // CF
+                glVertex3f(mins[0], mins[1], maxs[2]);
+                glVertex3f(mins[0], maxs[1], maxs[2]);
+                // EF
+                glVertex3f(mins[0], maxs[1], mins[2]);
+                glVertex3f(mins[0], maxs[1], maxs[2]);
+                break;
+            case 1:
+                // AB
+                glVertex3f(mins[0], mins[1], mins[2]);
+                glVertex3f(maxs[0], mins[1], mins[2]);
+                // AC
+                glVertex3f(mins[0], mins[1], mins[2]);
+                glVertex3f(mins[0], mins[1], maxs[2]);
+                // BD
+                glVertex3f(maxs[0], mins[1], mins[2]);
+                glVertex3f(maxs[0], mins[1], maxs[2]);
+                // CD
+                glVertex3f(mins[0], mins[1], maxs[2]);
+                glVertex3f(maxs[0], mins[1], maxs[2]);
+                break;
+            case 2:
+                // AB
+                glVertex3f(mins[0], mins[1], mins[2]);
+                glVertex3f(maxs[0], mins[1], mins[2]);
+                // AE
+                glVertex3f(mins[0], mins[1], mins[2]);
+                glVertex3f(mins[0], maxs[1], mins[2]);
+                // BH
+                glVertex3f(maxs[0], mins[1], mins[2]);
+                glVertex3f(maxs[0], maxs[1], mins[2]);
+                // EH
+                glVertex3f(mins[0], maxs[1], mins[2]);
+                glVertex3f(maxs[0], maxs[1], mins[2]);
+        }
+    glEnd();
+    glPopMatrix();
+    
+}
+
+void DrawBoxes(void)
+{
+    float sceneBox[6];
+    int n;
+    
+    // Transform the main scene bounding box variable from fixed point to floating point.
+    for (n = 0; n < 6; n++)
+        sceneBox[n] = (float)SceneBoundingBox[n] / 65536.0;
+    
+    _childDrawBoxes(0, sceneBox);
+}
+
+void _childDrawBoxes(int currIdx, float nodeBB[6])
+{
+    float newBB[6], splitPos;
+    int splitAxis;
+    
+    // Does this node have children?
+    if (TreeMatrix[currIdx][TREE_MATRIX_LEAF_NODE] < 0)
+    {
+        // Extract and convert the split position and axis:
+        splitPos = (float) TreeMatrix[currIdx][TREE_MATRIX_SPLIT_POSITION] / 65536.0;
+        splitAxis = TreeMatrix[currIdx][TREE_MATRIX_AXIS_INDEX];
+        
+        // Draw this box:
+        DrawBoundaryBox(nodeBB, splitAxis, splitPos);
+        
+        // Modify boundary box before passing onto node:
+        memcpy(&newBB[0], &nodeBB[0], sizeof(float) * 6);
+        newBB[TREE_BOUNDING_BOX_SIZE_X + splitAxis] = splitPos - newBB[TREE_BOUNDING_BOX_LOCATION_X + splitAxis];
+        
+        // Pass onto the first child:
+        _childDrawBoxes(TreeMatrix[currIdx][TREE_MATRIX_LEFT_NODE], newBB);
+        
+        // Modify boundary box before passing onto node:
+        newBB[TREE_BOUNDING_BOX_LOCATION_X + splitAxis] = splitPos;
+        newBB[TREE_BOUNDING_BOX_SIZE_X + splitAxis] = nodeBB[TREE_BOUNDING_BOX_SIZE_X + splitAxis] - newBB[TREE_BOUNDING_BOX_SIZE_X + splitAxis];
+        
+        // Pass onto the second child:
+        _childDrawBoxes(TreeMatrix[currIdx][TREE_MATRIX_RIGHT_NODE], newBB);
+    }
+    else
+        // Don't process leaf nodes
+        return;
+}
 
 // Draws a square that's centred at (x, y)
 void DrawSquareNode(float x, float y)
@@ -317,7 +473,18 @@ void sceneSubWindowRenderer(void)
     glutSetWindow(sceneSubWindow);
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+    // Switch to drawing mode
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluPerspective(90.0, 0.625, 0.0, 200.0);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    gluLookAt(10, 15, 20, 0, 0, 0, 0, 1, 0);
+    DrawBoxes();
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
     
     // Finally, swap buffers:
     glutSwapBuffers();
