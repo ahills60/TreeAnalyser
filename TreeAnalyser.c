@@ -142,13 +142,16 @@ void DrawLinesNode(float startx, float starty, float endx, float endy)
 void DrawTree(void)
 {
     int n;
+    
+    // Set the tree window
+    // glutSetWindow(treeSubWindow);
+    
     // Initialise current progress vector
     for (n = 0; n < MAX_BOUNDING_BOXES; n++)
         TreeDepthCurrentProgress[n] = 0;
     
     // Call the child thread
     _childDrawTree(0, 0);
-    
 }
 
 // Child draw tree process
