@@ -274,6 +274,12 @@ void reshapeFunc(int newWidth, int newHeight)
 {
     // Always force the size to be set to defaults
     glutReshapeWindow(SCREEN_WIDTH, SCREEN_HEIGHT);
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    glMatrixMode(GL_PROJECTION);  
+    glLoadIdentity();  
+    gluOrtho2D(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0);  
+    glMatrixMode(GL_MODELVIEW);  
+    glLoadIdentity();  
 }
 
 // Main window idle function
