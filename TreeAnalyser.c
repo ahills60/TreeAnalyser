@@ -354,8 +354,11 @@ void initialiseGLUT(int argc, char *argv[])
 // Common UI elements are initialised within this function
 void initUI()
 {
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     glutIgnoreKeyRepeat(1);
     glutKeyboardFunc(keyboardFunc);
