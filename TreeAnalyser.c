@@ -330,7 +330,7 @@ void initialiseGLUT(int argc, char *argv[])
     // Attach renderers to the main window
     glutDisplayFunc(mainWindowRenderer);
     glutReshapeFunc(reshapeFunc);
-    glutIdleFunc(idleFunc);
+    // glutIdleFunc(idleFunc);
     // Then initialise UI elements
     initUI();
     
@@ -347,10 +347,8 @@ void initialiseGLUT(int argc, char *argv[])
     glutDisplayFunc(sceneSubWindowRenderer);
     // Then initialise UI elements
     initUI();
-    
-    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    glLoadIdentity();
-    glOrtho(0.0, SCREEN_WIDTH - 1.0, 0.0, SCREEN_HEIGHT - 1.0, -1.0,  1.0);
+    // glLoadIdentity();
+    // glOrtho(0.0, SCREEN_WIDTH - 1.0, 0.0, SCREEN_HEIGHT - 1.0, -1.0,  1.0);
 }
 
 // Common UI elements are initialised within this function
