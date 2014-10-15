@@ -372,7 +372,10 @@ void initUI()
 void keyboardFunc(unsigned char key, int xmouse, int ymouse)
 {
     if (key == ESCAPE_KEY)
+    {
+        glutDestroyWindow(mainWindow);
         exit(0);
+    }
 }
 
 // Keyboard special key capture
