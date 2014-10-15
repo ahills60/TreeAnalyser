@@ -560,7 +560,7 @@ int main (int argc, char *argv[])
     
     initialiseGLUT(argc, argv);
     
-    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_DEPTH_TEST);
     
     glutMainLoop();
     
