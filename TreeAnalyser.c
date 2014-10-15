@@ -169,18 +169,18 @@ void _childDrawTree(int currIdx, int depth)
     }
     
     // Compute the new x location
-    posx = (float) TreeDepthCounter[depth] * 2.0 - 1.0;
-    posx = NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth] * 2.0 - 1.0) / posx;
+    posx = (float) TreeDepthCounter[depth];
+    posx = 5*NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth] * 2.0 - 1.0) / posx;
     // Compute the old x location:
     if (depth > 0)
     {
-        parentposx = (float) TreeDepthCounter[depth - 1] * 2.0 - 1.0;
-        parentposx = NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth - 1] * 2.0 - 1.0) / parentposx;
+        parentposx = (float) TreeDepthCounter[depth - 1];
+        parentposx = 5*NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth - 1] * 2.0 - 1.0) / parentposx;
         // Draw line back to the parent
-        DrawLinesNode(parentposx, -(depth - 1), posx, -depth);
+        DrawLinesNode(parentposx, -NODE_DRAW_SQUARE_SIZE * 1.5 * ((float) depth - 1), posx, -NODE_DRAW_SQUARE_SIZE * 1.5 * (float) depth);
     }
     // Finally, draw the block:
-    DrawSquareNode(posx, -depth);
+    DrawSquareNode(posx, -NODE_DRAW_SQUARE_SIZE * 1.5 * (float) depth);
 }
 
 // Function to initialise the tree depth counter:
