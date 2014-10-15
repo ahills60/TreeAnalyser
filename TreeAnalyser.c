@@ -24,6 +24,7 @@
 #include "DBSimulator/treeconsts.h"
 
 // Prototype functions
+void computeScenePosition(void);
 void DrawBoundaryBox(float bbvec[6], int splitAxis, float splitPos);
 void DrawBoxes(void);
 void _childDrawBoxes(int currIdx, float nodeBB[6]);
@@ -57,10 +58,10 @@ void setMaterial(int materialIdx, int textureIdx);
 // Global variables
 int mainWindow, treeSubWindow, sceneSubWindow;
 int SceneryLoaded = 0, xOrigin = -1, yOrigin = -1;
-float deltaAngleX = 0.0, deltaAngleY = 0.0, deltaMoveFB = 0.0, deltaMoveLR = 0.0, deltaMoveUD = 0.0, angleX = 0.0, angleY = 0.0;
+float deltaAngleX = 0.0, deltaAngleY = 0.0, deltaMoveFB = 0.0, deltaMoveLR = 0.0, deltaMoveUD = 0.0, angleX = 0.0, angleY = 0.0, x = 0, y = 1.75, z = 5;
 
 // Camera angles
-float lx = 0.0; lz = -1.0; 
+float lx = 0.0, ly = 0.0, lz = -1.0; 
 
 // Tree variables
 float StatsVector[STATS_VECTOR_SIZE];
@@ -97,6 +98,13 @@ Texture;
 
 // Variable for accessing the texture data.
 Texture Textures[MAX_TEXTURES];
+
+void computeScenePosition(void)
+{
+    x += deltaMoveLR * lx * 0.1;
+    y += deltaMoveUD * ly * 0.1;
+    z += deltaMoveFB * lz * 0.1;
+}
 
 // Draws a boundary box given these conditions:
 void DrawBoundaryBox(float bbvec[6], int splitAxis, float splitPos)
@@ -412,6 +420,7 @@ void mainWindowRenderer(void)
 {
     if (deltaMoveFB || deltaMoveLR || deltaMoveUD)
     {
+        computeScenePosition();
         glutSetWindow(mainWindow);
         glutPostRedisplay();
     }
@@ -480,7 +489,7 @@ void sceneSubWindowRenderer(void)
     gluPerspective(90.0, 0.625, 0.0, 200.0);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    gluLookAt(10, 15, 20, 0, 0, 0, 0, 1, 0);
+    gluLookAt(x, y, z, x + lx, y + ly, z + lz, 0, 1, 0);
     DrawBoxes();
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -622,6 +631,18 @@ void mouseFunc(int button, int state, int xmouse, int ymouse)
             yOrigin = ymouse;
         }
     }
+    else if (button == GLUT_LEFT_BUTTON)
+    {
+        if (state == GLUT_UP)
+        {
+            printf("UP %i, %i\n", xmouse, ymouse);
+            
+        }
+        else
+        {
+            printf("DOWN (%i) %i, %i\n", state, xmouse, ymouse);
+        }
+    }
 }
 
 // Mouse movement capture.
@@ -633,6 +654,13 @@ void mouseMoveFunc(int xmouse, int ymouse)
         // Update the deltaAngle:
         deltaAngleX = (xmouse - xOrigin) * 0.001;
         deltaAngleY = (ymouse - yOrigin) * 0.001;
+        
+        lx = sin(angleY + deltaAngleY) * cos(angleX + deltaAngleX);
+        ly = cos(angleY + deltaAngleY);
+        lz = sin(angleY + deltaAngleY) * sin(angleX + deltaAngleX);
+        
+        glutSetWindow(mainWindow);
+        glutPostRedisplay();
     }
 }
 
