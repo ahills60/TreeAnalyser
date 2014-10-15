@@ -16,6 +16,8 @@
 #include <time.h>
 #include <string.h>
 #include <math.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <GL/glut.h>
 #include "TreeAnalyser.h"
 #include "DAMSONCRaytracer/raytracer.h"
