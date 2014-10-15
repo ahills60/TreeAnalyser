@@ -547,6 +547,12 @@ int main (int argc, char *argv[])
     populateTreeNodeCounter();
     printf("Done.\n\n");
     
+    initialiseGLUT(argc, argv);
+    
+    glEnable(GL_DEPTH_TEST);
+    
+    glutMainLoop();
+    
     return 1;
 }
 
