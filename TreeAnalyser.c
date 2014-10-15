@@ -171,11 +171,11 @@ void _childDrawTree(int currIdx, int depth)
     
     TreeDepthCurrentProgress[depth]++;
     
-    if (TreeMatrix[TREE_MATRIX_LEAF_NODE] < 0)
+    if (TreeMatrix[currIdx][TREE_MATRIX_LEAF_NODE] < 0)
     {
         // Draw child nodes:
-        _childDrawTree(TreeMatrix[TREE_MATRIX_LEFT_NODE], depth + 1);
-        _childDrawTree(TreeMatrix[TREE_MATRIX_RIGHT_NODE], depth + 1);
+        _childDrawTree(TreeMatrix[currIdx][TREE_MATRIX_LEFT_NODE], depth + 1);
+        _childDrawTree(TreeMatrix[currIdx][TREE_MATRIX_RIGHT_NODE], depth + 1);
     }
     
     // Compute the new x location
