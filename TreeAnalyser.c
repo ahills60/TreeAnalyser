@@ -298,10 +298,10 @@ void DrawSquareNode(float x, float y, int nodeIdx)
         glColor3f(NODE_DRAW_SQUARE_COLOUR_R, NODE_DRAW_SQUARE_COLOUR_G, NODE_DRAW_SQUARE_COLOUR_B);
     glPushMatrix();
     glBegin(GL_QUADS);
-        glVertex3f(xmin, ymin, 0.0);
-        glVertex3f(xmin, ymax, 0.0);
-        glVertex3f(xmax, ymax, 0.0);
-        glVertex3f(xmax, ymin, 0.0);
+        glVertex2f(xmin, ymin);
+        glVertex2f(xmin, ymax);
+        glVertex2f(xmax, ymax);
+        glVertex2f(xmax, ymin);
     glEnd();
     glPopMatrix();
 }
@@ -316,8 +316,8 @@ void DrawLinesNode(float startx, float starty, float endx, float endy)
     glColor3f(NODE_DRAW_LINE_COLOUR_R, NODE_DRAW_LINE_COLOUR_G, NODE_DRAW_LINE_COLOUR_B);
     glPushMatrix();
     glBegin(GL_LINES);
-        glVertex3f(startx, starty, 0.0);
-        glVertex3f(endx, endy, 0.0);
+        glVertex2f(startx, starty);
+        glVertex2f(endx, endy);
     glEnd();
     glPopMatrix();
     
@@ -485,10 +485,12 @@ void treeSubWindowRenderer(void)
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluPerspective(90.0, 0.625, 3.0, 200.0);
+    
+    gluOrtho2D(-10, (SCREEN_WIDTH / 3 - BORDER_SIZE / 2) - 10, -(SCREEN_HEIGHT - 2 * BORDER_SIZE) + 10, 10);
+    // gluPerspective(90.0, 0.625, 3.0, 200.0);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    gluLookAt(40, -40, 70, 40, -40, 0, 0, 1, 0);
+    // gluLookAt(40, -40, 70, 40, -40, 0, 0, 1, 0);
     DrawTree();
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
