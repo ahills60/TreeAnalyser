@@ -520,7 +520,7 @@ void sceneSubWindowRenderer(void)
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluPerspective(90.0, 0.625, 0.0, 200.0);
+    gluPerspective(90.0, 1.0, 3.0, 200.0);
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     gluLookAt(x, y, z, x + lx, y + ly, z + lz, 0, 1, 0);
@@ -541,7 +541,7 @@ void initialiseGLUT(int argc, char *argv[])
     
     // Set up the window position:
     glutInitWindowPosition(0, 0);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH);
     
     printf("Initialising GLUT... ");
     glutInit(&argc, argv);
@@ -576,11 +576,24 @@ void initialiseGLUT(int argc, char *argv[])
 // Common UI elements are initialised within this function
 void initUI()
 {
+    GLfloat ambientLight[4] = {0.3, 0.3, 0.3, 1.0};
+    GLfloat diffuseLight[4] = {0.7, 0.7, 0.7, 1.0};
+    
+    // Enable lighting
+    glEnable(GL_LIGHTING);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+    glEnable(GL_LIGHT0);
+    
+    glEnable(GL_COLOR_MATERIAL);
+    
     glClearColor(0.0, 0.0, 0.0, 0.0);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    glDepthFunc(GL_LEQUAL);
     
     glutIgnoreKeyRepeat(1);
     glutKeyboardFunc(keyboardFunc);
