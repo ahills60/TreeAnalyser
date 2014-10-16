@@ -627,16 +627,16 @@ void specialFunc(int key, int xmouse, int ymouse)
             deltaMoveFB = -0.5;
             break;
         case GLUT_KEY_LEFT:
-            deltaMoveLR = -0.5;
+            deltaMoveLR = -5.0;
             break;
         case GLUT_KEY_RIGHT:
-            deltaMoveLR = 0.5;
+            deltaMoveLR = 5.0;
             break;
         case GLUT_KEY_PAGE_UP:
-            deltaMoveUD = 0.5;
+            deltaMoveUD = 1.0;
             break;
         case GLUT_KEY_PAGE_DOWN:
-            deltaMoveUD = -0.5;
+            deltaMoveUD = -1.0;
             break;
     }
 }
