@@ -731,12 +731,35 @@ void mouseMoveFunc(int xmouse, int ymouse)
 
 void mouseTreeFunc(int button, int state, int xmouse, int ymouse)
 {
+    int depth, estx, count = 0, n;
     if (button == GLUT_LEFT_BUTTON)
     {
         if (state == GLUT_UP)
         {
             printf("UP %i, %i\n", xmouse, ymouse);
-        
+            depth = (int)((ymouse - 5.0) / (NODE_DRAW_SQUARE_SIZE * 1.5));
+            // Early exit cases
+            if (depth > MAX_TREE_DEPTH)
+                return;
+            if (TreeDepthCounter[depth] == 0)
+                return;
+            // If here, we could have a genuine hit.
+            // Reverse engineer
+            estx = (int) ((((float) xmouse * (float) TreeDepthCounter[depth]) / ((float) TreeDepthMaxCount * NODE_DRAW_SQUARE_SIZE) - 1) / 2.0);
+            for (n = 0; n < noTreeMatrixEntries; n++)
+            {
+                // Quick reject
+                if (TreeDepthAssignment[n] != depth)
+                    continue;
+                if (count == estx)
+                {
+                    // Only change if the item isn't a leaf node.
+                    if (TreeMatrix[n][TREE_MATRIX_LEAF_NODE] < 0)
+                        SelectedNodeIdx = n;
+                    return;
+                }
+                count++;
+            }
         }
         else
         {
