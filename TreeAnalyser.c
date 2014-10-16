@@ -963,7 +963,7 @@ int LoadScenery(char *filename)
     }
     
     // Increment the global number of materials
-    noMaterials == localNoMaterials;
+    noMaterials = localNoMaterials;
     
     // We should now encounter a zero in the file. Verify this is the case:
     fread(&zeroCheck, sizeof(int), 1, fp);
