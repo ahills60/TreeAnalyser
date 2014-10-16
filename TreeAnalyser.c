@@ -45,11 +45,14 @@ void treeSubWindowRenderer(void);
 void sceneSubWindowRenderer(void);
 void initialiseGLUT(int argc, char *argv[]);
 void initUI();
+void initTreeUI();
 void keyboardFunc(unsigned char key, int xmouse, int ymouse);
 void specialFunc(int key, int xmouse, int ymouse);
 void specialReleaseFunc(int key, int xmouse, int ymouse);
 void mouseFunc(int button, int state, int xmouse, int ymouse);
 void mouseMoveFunc(int xmouse, int ymouse);
+void mouseTreeFunc(int button, int state, int xmouse, int ymouse);
+void mouseMoveTreeFunc(int xmouse, int ymouse);
 void LoadTree(char *filename);
 int LoadScenery(char *filename);
 void ReadTexture(int textureIdx, char *filename);
@@ -556,7 +559,7 @@ void initialiseGLUT(int argc, char *argv[])
     // Attach renderers to the tree sub window
     glutDisplayFunc(treeSubWindowRenderer);
     // Then initialise UI elements
-    initUI();
+    initTreeUI();
     
     sceneSubWindow  = glutCreateSubWindow(mainWindow, SCREEN_WIDTH / 3 + BORDER_SIZE / 2, BORDER_SIZE, 2 * (SCREEN_WIDTH / 3) - BORDER_SIZE, SCREEN_HEIGHT - 2 * BORDER_SIZE);
     
@@ -583,6 +586,23 @@ void initUI()
     glutSpecialUpFunc(specialReleaseFunc);
     glutMouseFunc(mouseFunc);
     glutMotionFunc(mouseMoveFunc);
+}
+
+void initTreeUI()
+{
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    glutIgnoreKeyRepeat(1);
+    glutKeyboardFunc(keyboardFunc);
+    glutSpecialFunc(specialFunc);
+    glutSpecialUpFunc(specialReleaseFunc);
+    // Mouse functions are different
+    glutMouseFunc(mouseTreeFunc);
+    glutMotionFunc(mouseMoveTreeFunc);
 }
 
 // Keyboard key capture
@@ -694,6 +714,26 @@ void mouseMoveFunc(int xmouse, int ymouse)
     }
 }
 
+void mouseTreeFunc(int button, int state, int xmouse, int ymouse)
+{
+    if (button == GLUT_LEFT_BUTTON)
+    {
+        if (state == GLUT_UP)
+        {
+            printf("UP %i, %i\n", xmouse, ymouse);
+        
+        }
+        else
+        {
+            printf("DOWN (%i) %i, %i\n", state, xmouse, ymouse);
+        }
+    }
+}
+
+void mouseMoveTreeFunc(int xmouse, int ymouse)
+{
+    
+}
 
 int main (int argc, char *argv[])
 {
