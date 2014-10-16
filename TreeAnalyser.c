@@ -57,6 +57,7 @@ void LoadTree(char *filename);
 int LoadScenery(char *filename);
 void ReadTexture(int textureIdx, char *filename);
 void setMaterial(int materialIdx, int textureIdx);
+void DrawScene(void);
 
 // Global variables
 int mainWindow, treeSubWindow, sceneSubWindow;
@@ -523,6 +524,7 @@ void sceneSubWindowRenderer(void)
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     gluLookAt(x, y, z, x + lx, y + ly, z + lz, 0, 1, 0);
+    DrawScene();
     DrawBoxes();
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -1177,4 +1179,22 @@ void setMaterial(int materialIdx, int textureIdx)
     // Then set everything to defaults:
     for (n = 0; n < 3; n ++)
         MaterialDB[materialIdx][MaterialColour + n] = 0.7; // Light grey
+}
+
+void DrawScene(void)
+{
+    int n;
+    
+    glColor3f(0.5, 0.5, 0.5);
+    glPushMatrix();
+    glBegin(GL_TRIANGLES);    
+        for (n = 0; n < noTriangles; n++)
+        {
+            glNormal3f(ObjectDB[n][Trianglenormcrvmuwmux], ObjectDB[n][Trianglenormcrvmuwmuy], ObjectDB[n][Trianglenormcrvmuwmuz]);
+            glVertex3f(ObjectDB[n][TriangleAx], ObjectDB[n][TriangleAy], ObjectDB[n][TriangleAz]);
+            glVertex3f(ObjectDB[n][TriangleBx], ObjectDB[n][TriangleBy], ObjectDB[n][TriangleBz]);
+            glVertex3f(ObjectDB[n][TriangleCx], ObjectDB[n][TriangleCy], ObjectDB[n][TriangleCz]);
+        }
+    glEnd();
+    glPopMatrix();
 }
