@@ -58,6 +58,7 @@ int LoadScenery(char *filename);
 void ReadTexture(int textureIdx, char *filename);
 void setMaterial(int materialIdx, int textureIdx);
 void DrawScene(void);
+void DisplayNodeInfo(void);
 
 // Global variables
 int mainWindow, treeSubWindow, sceneSubWindow;
@@ -436,6 +437,7 @@ int _childTreeNodeCounter(int nodeIdx)
             count++;
             idx = NodeList[idx][NODE_LIST_NEXT_INDEX];
         }
+        TreeNodeCounter[nodeIdx] = count;
         return count;
     }
     
@@ -503,6 +505,7 @@ void treeSubWindowRenderer(void)
     glPushMatrix();
     // gluLookAt(40, -40, 70, 40, -40, 0, 0, 1, 0);
     DrawTree();
+    DisplayNodeInfo();
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -754,7 +757,7 @@ void mouseTreeFunc(int button, int state, int xmouse, int ymouse)
                 if (count == estx)
                 {
                     // Only change if the item isn't a leaf node.
-                    if (TreeMatrix[n][TREE_MATRIX_LEAF_NODE] < 0)
+                    // if (TreeMatrix[n][TREE_MATRIX_LEAF_NODE] < 0)
                         SelectedNodeIdx = n;
                     return;
                 }
@@ -1233,4 +1236,31 @@ void DrawScene(void)
         }
     glEnd();
     glPopMatrix();
+}
+
+// Display the clicked node information.
+void DisplayNodeInfo(void)
+{
+    char charString[80];
+    int startHeight = 550, pixSteps = 18;
+    
+    // Set the colour before the position as it'll render with the last colour used!
+    glColor3f(1.0, 1.0, 1.0);
+    glRasterPos2i(5, -startHeight);
+    sprintf(charString, "%s information:", (TreeMatrix[SelectedNodeIdx][TREE_MATRIX_LEAF_NODE] < 0) ? "Junction node" : "Leaf node");
+    glutBitmapString(GLUT_BITMAP_HELVETICA_12, charString);
+    startHeight += pixSteps;
+    glColor3f(1.0, 1.0, 1.0);
+    glRasterPos2i(5, -startHeight);
+    sprintf(charString, "Primitives: %i", TreeNodeCounter[SelectedNodeIdx]);
+    glutBitmapString(GLUT_BITMAP_HELVETICA_12, charString);
+    
+    if (TreeMatrix[SelectedNodeIdx][TREE_MATRIX_LEAF_NODE] < 0)
+    {
+        startHeight += pixSteps;
+        glColor3f(1.0, 1.0, 1.0);
+        glRasterPos2i(5, -startHeight);
+        sprintf(charString, "Split position: %f (%c-axis)", SelectedSplitPosition, (SelectedSplitAxis == 0) ? 'x' : (SelectedSplitAxis == 1) ? 'y' : 'z');
+        glutBitmapString(GLUT_BITMAP_HELVETICA_12, charString);
+    }
 }
