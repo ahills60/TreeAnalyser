@@ -89,6 +89,7 @@ int TreeDepthCounter[MAX_TREE_DEPTH];
 int TreeDepthMaxCount = 0;
 int TreeNodeCounter[MAX_BOUNDING_BOXES];
 int TreeDepthCurrentProgress[MAX_TREE_DEPTH];
+int TreeDepthAssignment[MAX_BOUNDING_BOXES];
 
 int SelectedNodeIdx = 0, SelectedSplitAxis = 0;
 float SelectedBBVec[6] = {0, 0, 0, 0, 0, 0}, SelectedSplitPosition = 0.0;
@@ -392,6 +393,8 @@ void _childTreeDepthCounter(int nodeIdx, int depth)
     if (TreeDepthCounter[depth] > TreeDepthMaxCount)
         TreeDepthMaxCount = TreeDepthCounter[depth];
     
+    // And assign the tree depth to this index:
+    TreeDepthAssignment[nodeIdx] = depth;
     
     // Check if this branch is a leaf node. If not, call on children
     if (TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE] < 0)
