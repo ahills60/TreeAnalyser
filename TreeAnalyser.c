@@ -86,6 +86,7 @@ int noTextures = 0;
 
 // Tree stat counter:
 int TreeDepthCounter[MAX_TREE_DEPTH];
+int TreeDepthMaxCount = 0;
 int TreeNodeCounter[MAX_BOUNDING_BOXES];
 int TreeDepthCurrentProgress[MAX_TREE_DEPTH];
 
@@ -355,12 +356,12 @@ void _childDrawTree(int currIdx, int depth)
     
     // Compute the new x location
     posx = (float) TreeDepthCounter[depth];
-    posx = 5*NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth] * 2.0 - 1.0) / posx;
+    posx = TreeDepthMaxCount*NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth] * 2.0 - 1.0) / posx;
     // Compute the old x location:
     if (depth > 0)
     {
         parentposx = (float) TreeDepthCounter[depth - 1];
-        parentposx = 5*NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth - 1] * 2.0 - 1.0) / parentposx;
+        parentposx = TreeDepthMaxCount*NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth - 1] * 2.0 - 1.0) / parentposx;
         // Draw line back to the parent
         DrawLinesNode(parentposx, -NODE_DRAW_SQUARE_SIZE * 1.5 * ((float) depth - 1), posx, -NODE_DRAW_SQUARE_SIZE * 1.5 * (float) depth);
     }
@@ -388,6 +389,9 @@ void _childTreeDepthCounter(int nodeIdx, int depth)
     
     // Increment the counter
     TreeDepthCounter[depth]++;
+    if (TreeDepthCounter[depth] > TreeDepthMaxCount)
+        TreeDepthMaxCount = TreeDepthCounter[depth];
+    
     
     // Check if this branch is a leaf node. If not, call on children
     if (TreeMatrix[nodeIdx][TREE_MATRIX_LEAF_NODE] < 0)
