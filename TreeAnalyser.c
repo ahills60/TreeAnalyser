@@ -77,7 +77,7 @@ int SceneBoundingBox[TREE_BOUNDING_BOX_ARRAY_SIZE];
 int TreeMatrix[MAX_BOUNDING_BOXES][TREE_MATRIX_SIZE];
 int TreeList[MAX_TRIANGLES][TREE_LIST_SIZE];
 int SplitList[MAX_TRIANGLES * 2 + 8][SPLIT_LIST_SIZE];
-int NodeList[MAX_TRIANGLES * 2][NODE_LIST_SIZE];
+int NodeList[MAX_TRIANGLES * 20][NODE_LIST_SIZE];
 
 // Counters for the above lists.
 int SplitListTop = 0;
@@ -90,11 +90,11 @@ int noMaterials = 0;
 int noTextures = 0;
 
 // Tree stat counter:
-int TreeDepthCounter[MAX_TREE_DEPTH];
+int TreeDepthCounter[MAX_TREE_DEPTH + 1];
 int TreeDepthMaxCount = 0;
-int TreeNodeCounter[MAX_BOUNDING_BOXES];
-int TreeDepthCurrentProgress[MAX_TREE_DEPTH];
-int TreeDepthAssignment[MAX_BOUNDING_BOXES];
+int TreeNodeCounter[MAX_TRIANGLES * 20];
+int TreeDepthCurrentProgress[MAX_TREE_DEPTH + 1];
+int TreeDepthAssignment[MAX_TRIANGLES * 20];
 
 int SelectedNodeIdx = 0, SelectedSplitAxis = 0;
 float SelectedBBVec[6] = {0, 0, 0, 0, 0, 0}, SelectedSplitPosition = 0.0;
@@ -339,7 +339,7 @@ void DrawTree(void)
     // glutSetWindow(treeSubWindow);
     
     // Initialise current progress vector
-    for (n = 0; n < MAX_BOUNDING_BOXES; n++)
+    for (n = 0; n < MAX_TREE_DEPTH + 1; n++)
         TreeDepthCurrentProgress[n] = 0;
     
     // Call the child thread
@@ -742,7 +742,7 @@ void mouseTreeFunc(int button, int state, int xmouse, int ymouse)
             printf("UP %i, %i\n", xmouse, ymouse);
             depth = (int)((ymouse - 5.0) / (NODE_DRAW_SQUARE_SIZE * 1.5));
             // Early exit cases
-            if (depth > MAX_TREE_DEPTH)
+            if (depth > MAX_TREE_DEPTH + 1)
                 return;
             if (TreeDepthCounter[depth] == 0)
                 return;
@@ -907,10 +907,10 @@ void LoadTree(char *filename)
     fread(TreeList, sizeof(int), noTreeListEntries * TREE_LIST_SIZE, fp);
     
     // Then the split list:
-    fread(SplitList, sizeof(int), (MAX_TREE_DEPTH * 2 + 8) * SPLIT_LIST_SIZE, fp);
+    fread(SplitList, sizeof(int), (MAX_TRIANGLES * 2 + 8) * SPLIT_LIST_SIZE, fp);
     
     // Finally the node list:
-    fread(NodeList, sizeof(int), (MAX_TRIANGLES * 2) * NODE_LIST_SIZE, fp);
+    fread(NodeList, sizeof(int), (MAX_TRIANGLES * 20) * NODE_LIST_SIZE, fp);
     
     // As there's nothing else to read, close the file pointer:
     fclose(fp);
