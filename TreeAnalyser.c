@@ -369,10 +369,10 @@ void _childDrawTree(int currIdx, int depth)
         parentposx = (float) TreeDepthCounter[depth - 1];
         parentposx = TreeDepthMaxCount*NODE_DRAW_SQUARE_SIZE * ((float) TreeDepthCurrentProgress[depth - 1] * 2.0 - 1.0) / parentposx;
         // Draw line back to the parent
-        DrawLinesNode(parentposx, -NODE_DRAW_SQUARE_SIZE * 1.5 * ((float) depth - 1), posx, -NODE_DRAW_SQUARE_SIZE * 1.5 * (float) depth);
+        DrawLinesNode(parentposx, -NODE_DRAW_SQUARE_SIZE * 2.0 * ((float) depth - 1), posx, -NODE_DRAW_SQUARE_SIZE * 2.0 * (float) depth);
     }
     // Finally, draw the block:
-    DrawSquareNode(posx, -NODE_DRAW_SQUARE_SIZE * 1.5 * (float) depth, currIdx);
+    DrawSquareNode(posx, -NODE_DRAW_SQUARE_SIZE * 2.0 * (float) depth, currIdx);
 }
 
 // Function to initialise the tree depth counter:
@@ -740,7 +740,7 @@ void mouseTreeFunc(int button, int state, int xmouse, int ymouse)
         if (state == GLUT_UP)
         {
             printf("UP %i, %i\n", xmouse, ymouse);
-            depth = (int)((ymouse - 5.0) / (NODE_DRAW_SQUARE_SIZE * 1.5));
+            depth = (int)((ymouse - 5.0) / (NODE_DRAW_SQUARE_SIZE * 2.0));
             // Early exit cases
             if (depth > MAX_TREE_DEPTH + 1)
                 return;
